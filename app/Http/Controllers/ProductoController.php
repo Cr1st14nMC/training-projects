@@ -10,19 +10,28 @@ class ProductoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $productos = Producto::all();
+        $productos = Producto::orderBy('id','asc')->get();
+
+        // Si la petición espera JSON (API / AJAX), devolver JSON
+        if ($request->wantsJson() || $request->is('api/*')) {
+            return response()->json([
+                'success' => true,
+                'data' => $productos
+            ], 200);
+        }
+
+        // Si es petición normal, renderizar Blade
         return view('productos.index', compact('productos'));
-
-
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
+        // Si quieres que la vista create sea cargada por Vue desde /productos/create
         return view('productos.create');
     }
 
@@ -31,24 +40,23 @@ class ProductoController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'precio' => 'required|numeric|min:0',
         ]);
 
-        Producto::create($request->all());
+        $producto = Producto::create($validated);
+
+        if ($request->wantsJson() || $request->is('api/*')) {
+            return response()->json([
+                'success' => true,
+                'data' => $producto,
+                'message' => 'Producto creado correctamente.'
+            ], 201);
+        }
+
         return redirect()->route('productos.index')->with('success', 'Producto creado correctamente.');
-
-    }
-
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
     }
 
     /**
@@ -63,35 +71,52 @@ class ProductoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Producto $producto)
     {
-        $request->validate([
+        $validated = $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'precio' => 'required|numeric|min:0',
         ]);
 
-        $producto = Producto::findOrFail($id);
-        $producto->update($request->all());
+        $producto->update($validated);
 
-        return redirect()->route('productos.index')->with('success', 'Producto actualizado correctamente.');
+        if ($request->wantsJson() || $request->is('api/*')) {
+            return response()->json([
+                'success' => true,
+                'data' => $producto,
+                'message' => 'Producto actualizado'
+            ], 200);
+        }
+
+        return redirect()->route('productos.index')->with('success', 'Producto actualizado');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, Producto $producto)
     {
-        //
-        $producto = Producto::findOrFail($id); // Buscar el producto por id
-        $producto->delete(); // Eliminarlo de la base de datos
+        try {
+            $producto->delete();
 
-        return redirect()->route('productos.index')->with('success', 'Producto eliminado correctamente.');
+            if ($request->wantsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Producto eliminado correctamente.'
+                ], 200);
+            }
 
+            return redirect()->route('productos.index')->with('success', 'Producto eliminado correctamente.');
+        } catch (\Exception $e) {
+            if ($request->wantsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se pudo eliminar el producto.'
+                ], 500);
+            }
+
+            return redirect()->route('productos.index')->with('error', 'No se pudo eliminar el producto.');
+        }
     }
 }

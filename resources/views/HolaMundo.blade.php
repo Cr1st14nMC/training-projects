@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Laravel + Vue + Mix</title>
+  <title>Hola Mundo</title>
   <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 </head>
 <body>

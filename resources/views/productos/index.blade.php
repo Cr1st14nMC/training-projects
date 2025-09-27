@@ -1,78 +1,28 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
 <head>
-    <title>Lista de Productos</title>
+  <meta charset="utf-8">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Productos - Vue + Mix</title>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- tu CSS compilado -->
+  <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+
+  <!-- opcional: bootstrap CDN si no lo compilas -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
-
 <body>
-    <div class="container py-4">
-        <h1 class="mb-4">Productos</h1>
+  <div class="container py-4" id="app">
+    <h1 class="mb-4">Productos</h1>
 
-        <!-- Alert -->
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
+    <!-- pasa los productos iniciales desde blade a Vue -->
+    <Index :initial-products='@json($productos)'></Index>
+  </div>
 
-        <!-- Formulario para Crear (Nuevo Producto) -->
-        <form action="{{ route('productos.create') }}" method="GET" style="display:inline;">
-            <button type="submit" class="btn btn-primary btn-sm">Agregar</button>
-        </form>
-
-        <table class="table table-bordered align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th>Precio</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                @forelse($productos as $producto)
-                    <tr>
-                        <td>{{ $producto->id }}</td>
-                        <td>{{ $producto->nombre }}</td>
-                        <td>{{ $producto->descripcion }}</td>
-                        <td>${{ number_format($producto->precio, 2) }}</td>
-                        <td>
-
-
-                            <!-- Botón Editar -->
-                            <a href="{{ route('productos.edit', $producto->id) }}" class="btn btn-warning btn-sm">Editar</a>
-
-                            <!-- Formulario para Eliminar -->
-                            <form action="{{ route('productos.destroy', $producto->id) }}" method="POST"
-                                style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm"
-                                    onclick="return confirm('¿Estás seguro de eliminar este producto?')">
-                                    Eliminar
-                                </button>
-                            </form>
-
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" class="text-center">No hay productos.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- JS compilado por Mix (contiene Vue) -->
+  <script src="{{ mix('js/app.js') }}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>
