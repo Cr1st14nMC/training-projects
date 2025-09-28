@@ -10,7 +10,7 @@
 
 <body>
     <div id="app">
-        <Edit :producto='@json($producto)'></Edit>
+        <ProductoEdit :producto='@json($producto)'></ProductoEdit>
     </div>
 
     <script src="{{ mix('js/app.js') }}"></script>

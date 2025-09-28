@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Producto;
+use App\Models\Category;    
 
 class ProductoController extends Controller
 {
@@ -12,7 +13,20 @@ class ProductoController extends Controller
      */
     public function index(Request $request)
     {
-        $productos = Producto::orderBy('id','asc')->get();
+        $productos = Producto::orderBy('id', 'asc')->get();
+
+
+        $q = $request->query('q');
+
+        $query = Producto::query();
+
+        if ($q) {
+            $query->where(function ($sub) use ($q) {
+                $sub->where('nombre', 'like', "%{$q}%")
+                    ->orWhere('descripcion', 'like', "%{$q}%")
+                    ->orWhere('precio', 'like', "%{$q}%");
+            });
+        }
 
         // Si la petición espera JSON (API / AJAX), devolver JSON
         if ($request->wantsJson() || $request->is('api/*')) {
@@ -22,7 +36,9 @@ class ProductoController extends Controller
             ], 200);
         }
 
+
         // Si es petición normal, renderizar Blade
+
         return view('productos.index', compact('productos'));
     }
 
@@ -31,8 +47,9 @@ class ProductoController extends Controller
      */
     public function create(Request $request)
     {
+        $categories = Category::orderBy('nombre')->get();
+        return view('productos.create', compact('categories'));
         // Si quieres que la vista create sea cargada por Vue desde /productos/create
-        return view('productos.create');
     }
 
     /**
@@ -47,6 +64,10 @@ class ProductoController extends Controller
         ]);
 
         $producto = Producto::create($validated);
+
+        if ($request->has('categories')) {
+            $producto->categories()->sync($request->input('categories'));
+        }
 
         if ($request->wantsJson() || $request->is('api/*')) {
             return response()->json([

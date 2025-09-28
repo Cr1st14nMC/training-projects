@@ -1,6 +1,8 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\CategoryController;
+
 
 Route::get('/', function () {
     $productos = \App\Models\Producto::all();
@@ -8,7 +10,14 @@ Route::get('/', function () {
 
 });
 
+// Route::get('/', function () {
+//     $productos = \App\Models\Producto::all();
+//     return view('home', compact('productos'));
+// });
+
+
 Route::resource('productos', ProductoController::class);
+Route::resource('categories', CategoryController::class);
 
 
 // Route::get('/', function () {

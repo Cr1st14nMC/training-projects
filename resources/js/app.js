@@ -20,9 +20,13 @@
 
 // resources/js/app.js
 import { createApp } from 'vue';
-import Index from './components/Index.vue';
-import Edit from './components/Edit.vue';
-import Create from './components/Create.vue';
+import ProductoEdit from './components/ProductoEdit.vue';
+import ProductoCreate from './components/ProductoCreate.vue';
+import ProductoIndex from './components/ProductoIndex.vue';
+import CategoriaCreate from './components/CategoriaCreate.vue';
+import CategoriaEdit from './components/CategoriaEdit.vue';
+import CategoriaIndex from './components/CategoriaIndex.vue';
+
 
 // 👈 importamos axios
 import axios from 'axios';  
@@ -52,7 +56,10 @@ axios.get('productos')
 
 // montar la app
 const app = createApp({});
-app.component('Index', Index);
-app.component('Edit', Edit);
-app.component('Create', Create);
+app.component('ProductoIndex', ProductoIndex);
+app.component('ProductoEdit', ProductoEdit);
+app.component('ProductoCreate', ProductoCreate);
+app.component('CategoriaCreate', CategoriaCreate);
+app.component('CategoriaEdit', CategoriaEdit);
+app.component('CategoriaIndex', CategoriaIndex);
 app.mount('#app');

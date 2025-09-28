@@ -11,9 +11,15 @@
 
 <body>
     <div id="app">
-        <Create store-url="{{ route('productos.store') }}" cancel-url="{{ route('productos.index') }}">
-        </Create>
+        <ProductoCreate store-url="{{ route('productos.store') }}" cancel-url="{{ route('productos.index') }}">
+        </ProductoCreate>
     </div>
+
+    <select name="categories[]" multiple class="form-control">
+        @foreach($categories as $cat)
+            <option value="{{ $cat->id }}">{{ $cat->nombre }}</option>
+        @endforeach
+    </select>
 
     <script src="{{ mix('js/app.js') }}"></script>
 </body>
