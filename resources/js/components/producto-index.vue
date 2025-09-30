@@ -97,7 +97,7 @@
 import axios from "axios";
 
 export default {
-    name: "Index",
+    name: "ProductIndex",
     data() {
         return {
             productos: [],

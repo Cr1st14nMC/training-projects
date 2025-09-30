@@ -2,7 +2,7 @@
 import { createApp } from 'vue';
 import ProductoEdit from './components/ProductoEdit.vue';
 import ProductoCreate from './components/ProductoCreate.vue';
-import ProductoIndex from './components/ProductoIndex.vue';
+import producto_index from './components/producto-index.vue';
 import CategoriaCreate from './components/CategoriaCreate.vue';
 import CategoriaEdit from './components/CategoriaEdit.vue';
 import CategoriaIndex from './components/CategoriaIndex.vue';
@@ -23,7 +23,7 @@ if (token) {
 
 // Montar la app Vue
 const app = createApp({});
-app.component('ProductoIndex', ProductoIndex);
+app.component('producto-index', producto_index);
 app.component('ProductoEdit', ProductoEdit);
 app.component('ProductoCreate', ProductoCreate);
 app.component('CategoriaCreate', CategoriaCreate);

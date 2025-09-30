@@ -6,9 +6,9 @@
 
 @section('content')
   <div id="app">
-    <ProductoIndex 
+    <producto-index 
         :initial-products='@json($productos)' 
         :initial-query="'{{ request('q', '') }}'">
-    </ProductoIndex>
+    </producto-index>
   </div>
 @endsection
