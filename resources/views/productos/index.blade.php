@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('title','Productos')
@@ -7,7 +8,7 @@
   <div id="app">
     <ProductoIndex 
         :initial-products='@json($productos)' 
-        initial-query="{{ request('q') }}">
+        :initial-query="'{{ request('q', '') }}'">
     </ProductoIndex>
   </div>
 @endsection

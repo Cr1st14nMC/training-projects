@@ -15,11 +15,6 @@
                 Limpiar
             </button>
         </div>
-        <div>
-            <button @click="goCreate" class="btn btn-primary btn-sm">
-                <i class="bi bi-plus me-2"></i> Agregar
-            </button>
-        </div>
     </div>
 
     <div>
@@ -126,20 +121,26 @@ export default {
 
     methods: {
         async fetchProductos() {
-            this.loading = true;
-            try {
-                const params = {};
-                if (this.q) params.q = this.q;
-                const res = await axios.get("/productos", {
-                    headers: { Accept: "application/json" },
-                });
-            } catch (err) {
-                console.error(err);
-                this.showAlert("Error al cargar productos", "error");
-            } finally {
-                this.loading = false;
-            }
-        },
+    this.loading = true;
+    try {
+        const params = {};
+        if (this.q) params.q = this.q;
+        const res = await axios.get("/productos", {
+            headers: { Accept: "application/json" },
+            params: params  // ← FALTABA ESTO
+        });
+        
+        // ← FALTABA ASIGNAR LOS DATOS
+        if (res.data) {
+            this.productos = res.data;
+        }
+    } catch (err) {
+        console.error(err);
+        this.showAlert("Error al cargar productos", "error");
+    } finally {
+        this.loading = false;
+    }
+},
         onSearch() {
             // debounce simple: espera 300ms antes de buscar
             clearTimeout(this._searchTimeout);

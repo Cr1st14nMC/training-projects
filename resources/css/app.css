@@ -1,3 +1,46 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Elimina las directivas de Tailwind */
+
+body {
+  font-family: sans-serif;
+  min-height: 100vh;
+}
+
+.sidebar {
+  min-width: 220px;
+  max-width: 250px;
+  background: linear-gradient(180deg, rgb(191, 191, 191), rgb(199, 199, 199));
+  color: rgb(0, 0, 0);
+  transition: all 0.3s ease;
+}
+
+.sidebar h4 {
+  font-weight: bold;
+  color: rgb(0, 0, 0);
+}
+
+.sidebar .nav-link {
+  color: rgb(80, 38, 235);
+  padding: 10px 15px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  font-size: 15px;
+}
+
+.sidebar .nav-link i {
+  font-size: 18px;
+  transition: transform 0.3s ease;
+}
+
+.sidebar .nav-link:hover {
+  background: rgba(199, 199, 199, 0.2);
+  transform: translateX(5px);
+}
+
+.sidebar .nav-link:hover i {
+  transform: rotate(15deg);
+}
+
+.content {
+  flex: 1 1 auto;
+  padding: 20px;
+}

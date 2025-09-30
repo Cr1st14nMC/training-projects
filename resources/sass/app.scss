@@ -1,2 +1,41 @@
-@import 'slidebar.scss';
-@import 'color.scss';
+/* Elimina las directivas de Tailwind */
+
+.sidebar {
+  min-width: 220px;
+  max-width: 250px;
+  background: linear-gradient(180deg, rgb(0, 0, 0), rgb(0, 0, 0));
+  color: rgb(0, 0, 0);
+  transition: all 0.3s ease;
+}
+
+.sidebar h4 {
+  font-weight: bold;
+  color: rgb(0, 0, 0);
+}
+
+.sidebar .nav-link {
+  color: rgb(0, 0, 0);
+  padding: 10px 15px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  font-size: 15px;
+}
+
+.sidebar .nav-link i {
+  font-size: 18px;
+  transition: transform 0.3s ease;
+}
+
+.sidebar .nav-link:hover {
+  background: rgba(0, 0, 0, 0.2);
+  transform: translateX(5px);
+}
+
+.sidebar .nav-link:hover i {
+  transform: rotate(15deg);
+}
+
+.content {
+  flex: 1 1 auto;
+  padding: 20px;
+}

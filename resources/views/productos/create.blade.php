@@ -1,3 +1,8 @@
+@extends('layouts.app')
+
+@section('title','Productos')
+@section('header','Productos')
+
 <!DOCTYPE html>
 <html>
 

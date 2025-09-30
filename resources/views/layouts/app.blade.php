@@ -9,11 +9,11 @@
   <link rel="stylesheet" href="{{ mix('css/app.css') }}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-  <style>
+  {{-- <style>
     body { min-height: 100vh; }
     .sidebar { min-width: 220px; max-width: 250px; }
     .content { flex: 1 1 auto; padding: 20px; }
-  </style>
+  </style> --}}
 </head>
 <body>
   <div class="d-flex">
@@ -35,10 +35,6 @@
     </li>
   </ul>
 </nav>
-
-<style>
-
-</style>
 
 
     <!-- Main content -->
