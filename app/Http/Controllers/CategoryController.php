@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Category;
 
+
+
 class CategoryController extends Controller
 {
     /**
@@ -22,7 +24,7 @@ class CategoryController extends Controller
             ], 200);
         }
 
-        return view('categories.index', compact('categories'));
+        return view('category.index', compact('categories'));
     }
 
     /**
@@ -30,7 +32,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('categories.create');
+        return view('category.create');
     }
 
     /**
@@ -39,12 +41,14 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nombre' => 'required|string|max:255|unique:categories,nombre'
+            'nombre' => 'required|string|max:255|unique:categories,nombre',
+            'descripcion' => 'nullable|string|max:500'
+
         ]);
 
         $category = Category::create([
             'nombre' => $validated['nombre'],
-            'slug' => \Str::slug($validated['nombre'])
+            'descripcion' => $validated['descripcion'] ?? null
         ]);
 
         if ($request->wantsJson() || $request->is('api/*')) {
@@ -55,7 +59,7 @@ class CategoryController extends Controller
             ], 201);
         }
 
-        return redirect()->route('categories.index')->with('success', 'Categoría creada correctamente.');
+        return redirect()->route('category.index')->with('success', 'Categoría creada correctamente.');
     }
 
     /**
@@ -78,7 +82,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-        return view('categories.edit', compact('category'));
+        return view('category.edit', compact('category'));
     }
 
     /**
@@ -89,11 +93,13 @@ class CategoryController extends Controller
         $validated = $request->validate([
             // ignore current id en unique
             'nombre' => 'required|string|max:255|unique:categories,nombre,' . $category->id,
+            'descripcion' => 'nullable|string|max:500'
+
         ]);
 
         $category->update([
             'nombre' => $validated['nombre'],
-            'slug' => \Str::slug($validated['nombre'])
+            'descripcion' => $validated['descripcion'] ?? null
         ]);
 
         if ($request->wantsJson() || $request->is('api/*')) {
@@ -104,7 +110,7 @@ class CategoryController extends Controller
             ], 200);
         }
 
-        return redirect()->route('categories.index')->with('success', 'Categoría actualizada correctamente.');
+        return redirect()->route('category.index')->with('success', 'Categoría actualizada correctamente.');
     }
 
     /**
@@ -124,7 +130,7 @@ class CategoryController extends Controller
                 ], 200);
             }
 
-            return redirect()->route('categories.index')->with('success', 'Categoría eliminada correctamente.');
+            return redirect()->route('category.index')->with('success', 'Categoría eliminada correctamente.');
         } catch (\Exception $e) {
             if ($request->wantsJson() || $request->is('api/*')) {
                 return response()->json([
@@ -133,7 +139,7 @@ class CategoryController extends Controller
                 ], 500);
             }
 
-            return redirect()->route('categories.index')->with('error', 'No se pudo eliminar la categoría.');
+            return redirect()->route('category.index')->with('error', 'No se pudo eliminar la categoría.');
         }
     }
 }

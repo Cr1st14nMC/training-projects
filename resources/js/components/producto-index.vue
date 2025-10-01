@@ -1,12 +1,13 @@
 <template>
     <!-- parte superior del template -->
     <div class="mb-3 d-flex justify-content-between">
-        <div class="d-flex">
+        <div class="d-flex flex-grow-1 me-3">
             <input
                 v-model="q"
                 @input="onSearch"
                 class="form-control form-control-sm me-2"
-                placeholder="Buscar por nombre, descripción o precio"
+                placeholder="Buscar por ID o nombre"
+                style="min-width: 300px; max-width: 600px;"
             />
             <button
                 @click="clearSearch"
@@ -86,7 +87,9 @@
                 </tr>
 
                 <tr v-if="!loading && productos.length === 0">
-                    <td colspan="5" class="text-center">No hay productos.</td>
+                    <td colspan="5" class="text-center">
+                        {{ q ? 'No se encontraron resultados' : 'No hay productos.' }}
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -97,7 +100,7 @@
 import axios from "axios";
 
 export default {
-    name: "ProductIndex",
+    name: "producto-index",
     data() {
         return {
             productos: [],
@@ -121,31 +124,45 @@ export default {
 
     methods: {
         async fetchProductos() {
-    this.loading = true;
-    try {
-        const params = {};
-        if (this.q) params.q = this.q;
-        const res = await axios.get("/productos", {
-            headers: { Accept: "application/json" },
-            params: params  // ← FALTABA ESTO
-        });
-        
-        // ← FALTABA ASIGNAR LOS DATOS
-        if (res.data) {
-            this.productos = res.data;
-        }
-    } catch (err) {
-        console.error(err);
-        this.showAlert("Error al cargar productos", "error");
-    } finally {
-        this.loading = false;
-    }
-},
+            this.loading = true;
+            try {
+                const params = {};
+                if (this.q) params.q = this.q;
+                
+                const res = await axios.get("/productos", {
+                    headers: { Accept: "application/json" },
+                    params: params
+                });
+                
+                // Manejar ambos formatos de respuesta
+                if (res.data) {
+                    // Si viene en formato {success: true, data: [...]}
+                    if (res.data.data) {
+                        this.productos = res.data.data;
+                    } 
+                    // Si viene directamente como array
+                    else if (Array.isArray(res.data)) {
+                        this.productos = res.data;
+                    }
+                    // Si es objeto con productos
+                    else {
+                        this.productos = res.data;
+                    }
+                }
+            } catch (err) {
+                console.error("Error al cargar productos:", err);
+                this.showAlert("Error al cargar productos", "error");
+            } finally {
+                this.loading = false;
+            }
+        },
+
         onSearch() {
             // debounce simple: espera 300ms antes de buscar
             clearTimeout(this._searchTimeout);
             this._searchTimeout = setTimeout(() => this.fetchProductos(), 300);
         },
+
         clearSearch() {
             this.q = "";
             this.fetchProductos();
@@ -194,5 +211,3 @@ export default {
     },
 };
 </script>
-
-<script></script>

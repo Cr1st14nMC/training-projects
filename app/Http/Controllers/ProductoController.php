@@ -12,36 +12,28 @@ class ProductoController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {
-        $productos = Producto::orderBy('id', 'asc')->get();
+{
+    $q = $request->query('q');
+    $query = Producto::query();
 
-
-        $q = $request->query('q');
-
-        $query = Producto::query();
-
-        if ($q) {
-            $query->where(function ($sub) use ($q) {
-                $sub->where('nombre', 'like', "%{$q}%")
-                    ->orWhere('descripcion', 'like', "%{$q}%")
-                    ->orWhere('precio', 'like', "%{$q}%");
-            });
-        }
-
-        // Si la petición espera JSON (API / AJAX), devolver JSON
-        if ($request->wantsJson() || $request->is('api/*')) {
-            return response()->json([
-                'success' => true,
-                'data' => $productos
-            ], 200);
-        }
-
-
-        // Si es petición normal, renderizar Blade
-
-        return view('productos.index', compact('productos'));
+    if ($q) {
+        $query->where(function ($sub) use ($q) {
+            $sub->where('id', 'like', "%{$q}%")
+                ->orWhere('nombre', 'like', "%{$q}%");
+        });
     }
 
+    $productos = $query->orderBy('id', 'asc')->get();
+
+    if ($request->wantsJson() || $request->is('api/*')) {
+        return response()->json([
+            'success' => true,
+            'data' => $productos
+        ], 200);
+    }
+
+    return view('productos.index', compact('productos'));
+}
     /**
      * Show the form for creating a new resource.
      */
@@ -60,6 +52,7 @@ class ProductoController extends Controller
         $validated = $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
+            'categories_id' => 'nullable|exists:categories,id',
             'precio' => 'required|numeric|min:0',
         ]);
 
@@ -83,10 +76,12 @@ class ProductoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Producto $producto)
     {
-        $producto = Producto::findOrFail($id);
-        return view('productos.edit', compact('producto'));
+        // Cargar todas las categorías
+        $categories = Category::orderBy('nombre', 'asc')->get();
+        
+        return view('productos.edit', compact('producto', 'categories'));
     }
 
     /**
@@ -96,8 +91,9 @@ class ProductoController extends Controller
     {
         $validated = $request->validate([
             'nombre' => 'required|string|max:255',
-            'descripcion' => 'nullable|string',
-            'precio' => 'required|numeric|min:0',
+            'descripcion' => 'nullable|string|max:500',
+            'categoria_id' => 'required|exists:categories,id',
+            'precio' => 'required|numeric|min:0'
         ]);
 
         $producto->update($validated);
@@ -106,11 +102,12 @@ class ProductoController extends Controller
             return response()->json([
                 'success' => true,
                 'data' => $producto,
-                'message' => 'Producto actualizado'
+                'message' => 'Producto actualizado correctamente.'
             ], 200);
         }
 
-        return redirect()->route('productos.index')->with('success', 'Producto actualizado');
+        return redirect()->route('productos.index')
+            ->with('success', 'Producto actualizado correctamente.');
     }
 
     /**

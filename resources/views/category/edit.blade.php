@@ -5,12 +5,10 @@
 
 @section('content')
   <div id="app">
-    <CategoriaEdit
+    <categoria-edit
       :category='@json($category)'
-      update-url="{{ route('categories.update', $category) }}"
+      update-url="{{ route('categories.update', $category->id) }}"
       cancel-url="{{ route('categories.index') }}"
-    ></CategoriaEdit>
+    ></categoria-edit>
   </div>
-    <script src="{{ mix('js/app.js') }}"></script>
-
 @endsection

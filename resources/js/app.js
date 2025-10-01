@@ -1,11 +1,11 @@
 // resources/js/app.js
 import { createApp } from 'vue';
-import ProductoEdit from './components/ProductoEdit.vue';
-import ProductoCreate from './components/ProductoCreate.vue';
+import producto_edit from './components/producto-edit.vue';
+import producto_create from './components/producto-create.vue';
 import producto_index from './components/producto-index.vue';
-import CategoriaCreate from './components/CategoriaCreate.vue';
-import CategoriaEdit from './components/CategoriaEdit.vue';
-import CategoriaIndex from './components/CategoriaIndex.vue';
+import categoria_create from './components/categoria-create.vue';
+import categoria_edit from './components/categoria-edit.vue';
+import categoria_index from './components/categoria-index.vue';
 
 // Importar axios
 import axios from 'axios';
@@ -21,12 +21,18 @@ if (token) {
   axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 }
 
+// Montar Vue solo si existe el elemento #app y no está ya montado
+const appElement = document.getElementById('app');
+if (appElement && !appElement.__vue_app__) {
+  const app = createApp({});
+
 // Montar la app Vue
-const app = createApp({});
 app.component('producto-index', producto_index);
-app.component('ProductoEdit', ProductoEdit);
-app.component('ProductoCreate', ProductoCreate);
-app.component('CategoriaCreate', CategoriaCreate);
-app.component('CategoriaEdit', CategoriaEdit);
-app.component('CategoriaIndex', CategoriaIndex);
+app.component('producto-edit', producto_edit);
+app.component('producto-create', producto_create);
+app.component('categoria-create', categoria_create);
+app.component('categoria-edit', categoria_edit);
+app.component('categoria-index', categoria_index);
+
 app.mount('#app');
+}

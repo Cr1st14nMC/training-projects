@@ -14,14 +14,14 @@ return new class extends Migration
     Schema::create('categories', function (Blueprint $table) {
         $table->id();
         $table->string('nombre')->unique();
-        $table->string('slug')->nullable();
+        $table->string('descripcion')->nullable();
         $table->timestamps();
     });
 
-    Schema::create('category_product', function (Blueprint $table) {
+    Schema::create('categories_product', function (Blueprint $table) {
         $table->id();
         $table->foreignId('product_id')->constrained('productos')->onDelete('cascade'); // si tu tabla es productos
-        $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
+        $table->foreignId('categories_id')->constrained('categories')->onDelete('cascade');
         $table->timestamps();
     });
 }

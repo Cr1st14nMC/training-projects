@@ -10,5 +10,6 @@
         :initial-products='@json($productos)' 
         :initial-query="'{{ request('q', '') }}'">
     </producto-index>
+
   </div>
 @endsection

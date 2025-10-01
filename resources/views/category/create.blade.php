@@ -5,12 +5,10 @@
 
 @section('content')
   <div id="app">
-    <!-- Pasamos las URLs necesarias -->
-    <CategoriaCreate
+    <categoria-create
       store-url="{{ route('categories.store') }}"
       cancel-url="{{ route('categories.index') }}"
-    ></CategoriaCreate>
+    ></categoria-create>
   </div>
-    <script src="{{ mix('js/app.js') }}"></script>
-
 @endsection
+
