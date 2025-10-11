@@ -16,7 +16,7 @@
               class="form-control"
               v-model="form.nombre"
               :class="{ 'is-invalid': errors.nombre }"
-              placeholder="Bebidas, Alimentos..."
+              placeholder="Coca, Pepsi, Fanta..."
               required
             />
             <div v-if="errors.nombre" class="invalid-feedback d-block">

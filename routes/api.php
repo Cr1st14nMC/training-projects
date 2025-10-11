@@ -10,9 +10,11 @@ use App\Http\Controllers\VentaController;
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
-// Rutas protegidas (requieren autenticación con Sanctum)
-Route::middleware('auth:sanctum')->group(function () {
-    // Auth
+// Rutas protegidas (requieren autenticación)
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
     Route::post('/logout', [AuthController::class, 'logout']);
     
     // Productos
@@ -28,8 +30,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/categories/{categorie}', [CategoryController::class, 'destroy']);
 
     // Ventas
+    // Route::resource(name: 'ventas', VentaController::class);
     Route::get('/ventas', [VentaController::class, 'index']);
     Route::post('/ventas', [VentaController::class, 'store']);
     Route::get('/ventas/{id}', [VentaController::class, 'show']);
     Route::delete('/ventas/{id}', [VentaController::class, 'destroy']);
-});

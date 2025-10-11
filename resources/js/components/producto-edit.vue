@@ -61,15 +61,16 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="categories_id" class="form-label"
-                            >Categoría</label
+                        <label for="categories" class="form-label"
+                            >Categorías</label
                         >
                         <select
-                            id="categoria_id"
-                            v-model.number="form.categoria_id"
+                            id="categories"
+                            v-model="form.categories"
                             class="form-select"
+                            multiple
+                            style="height: 150px"
                         >
-                            <option value="">Seleccionar categoría...</option>
                             <option
                                 v-for="cat in categories"
                                 :key="cat.id"
@@ -78,12 +79,6 @@
                                 {{ cat.nombre }}
                             </option>
                         </select>
-                        <div
-                            v-if="errors.categories_id"
-                            class="invalid-feedback d-block"
-                        >
-                            {{ errors.categories_id[0] }}
-                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -161,8 +156,10 @@ export default {
             form: {
                 nombre: this.producto.nombre || "",
                 descripcion: this.producto.descripcion || "",
-                categories_id: this.producto.categories_id || "",
                 precio: this.producto.precio || 0,
+                categories: this.producto.categories
+                    ? this.producto.categories.map((cat) => cat.id)
+                    : [],
             },
             errors: {},
             alert: {

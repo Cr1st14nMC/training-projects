@@ -7,8 +7,50 @@
                 @input="onSearch"
                 class="form-control form-control-sm me-2"
                 placeholder="Buscar por ID o nombre"
-                style="min-width: 300px; max-width: 600px;"
+                style="min-width: 300px; max-width: 600px"
             />
+            <div class="dropdown me-2">
+                <button
+                    class="btn btn-outline-success btn-sm dropdown-toggle me-2"
+                    type="button"
+                    id="dropdownFiltro"
+                    data-bs-toggle="dropdown"
+                    data-bs-auto-close="outside"
+                    aria-expanded="false"
+                >
+                    Filtrar
+                </button>
+                <ul
+                    class="dropdown-menu p-2"
+                    aria-labelledby="dropdownFiltro"
+                    style="max-height: 300px; overflow-y: auto"
+                >
+                    <li v-for="cat in categories" :key="cat.id">
+                        <div class="form-check dropdown-item px-3 m-3">
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                :value="cat.id"
+                                :id="'cat-' + cat.id"
+                                v-model="selectedCategories"
+                                @change="applySearch"
+                            />
+                            <label
+                                class="form-check-label fx-3"
+                                :for="'cat-' + cat.id"
+                            >
+                                {{ cat.nombre }}
+                            </label>
+                        </div>
+                    </li>
+                    <li v-if="categories.length === 0">
+                        <span class="dropdown-item-text text-muted"
+                            >No hay categorías</span
+                        >
+                    </li>
+                </ul>
+            </div>
+
             <button
                 @click="clearSearch"
                 class="btn btn-outline-secondary btn-sm"
@@ -56,6 +98,7 @@
                     <th>Nombre</th>
                     <th>Descripción</th>
                     <th>Precio</th>
+                    <th>Categoria</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -66,6 +109,25 @@
                     <td>{{ producto.nombre }}</td>
                     <td>{{ producto.descripcion }}</td>
                     <td>${{ Number(producto.precio).toFixed(2) }}</td>
+                    <td>
+                        <span
+                            v-if="
+                                producto.categories &&
+                                producto.categories.length > 0
+                            "
+                        >
+                            <span
+                                v-for="(cat, index) in producto.categories"
+                                :key="cat.id"
+                                class="badge bg-secondary me-1"
+                            >
+                                {{ cat.nombre }}
+                            </span>
+                        </span>
+                        <span v-else class="text-muted fst-italic">
+                            Sin categoría
+                        </span>
+                    </td>
                     <td>
                         <button
                             @click="goEdit(producto.id)"
@@ -83,12 +145,16 @@
                 </tr>
 
                 <tr v-if="loading">
-                    <td colspan="5" class="text-center">Cargando...</td>
+                    <td colspan="6" class="text-center">Cargando...</td>
                 </tr>
 
                 <tr v-if="!loading && productos.length === 0">
-                    <td colspan="5" class="text-center">
-                        {{ q ? 'No se encontraron resultados' : 'No hay productos.' }}
+                    <td colspan="6" class="text-center">
+                        {{
+                            q
+                                ? "No se encontraron resultados"
+                                : "No hay productos."
+                        }}
                     </td>
                 </tr>
             </tbody>
@@ -104,6 +170,8 @@ export default {
     data() {
         return {
             productos: [],
+            categories: [],
+            selectedCategories: [],
             q: this.initialQuery ?? "",
             alert: { show: false, message: "", type: "success" },
             loading: false,
@@ -114,6 +182,7 @@ export default {
         initialQuery: { type: String, default: "" },
     },
     mounted() {
+        this.fetchCategories();
         // usa los pasados por blade inicialmente si existen
         if (this.initialProducts && this.initialProducts.length) {
             this.productos = this.initialProducts;
@@ -123,23 +192,37 @@ export default {
     },
 
     methods: {
+        async fetchCategories() {
+            try {
+                const res = await axios.get("/categories", {
+                    headers: { Accept: "application/json" },
+                });
+                this.categories = res.data.data || res.data;
+            } catch (err) {
+                console.error("Error al cargar categorías:", err);
+            }
+        },
         async fetchProductos() {
             this.loading = true;
             try {
                 const params = {};
                 if (this.q) params.q = this.q;
-                
+
+                if (this.selectedCategories.length > 0) {
+                    params.categories = this.selectedCategories.join(",");
+                }
+
                 const res = await axios.get("/productos", {
                     headers: { Accept: "application/json" },
-                    params: params
+                    params: params,
                 });
-                
+
                 // Manejar ambos formatos de respuesta
                 if (res.data) {
                     // Si viene en formato {success: true, data: [...]}
                     if (res.data.data) {
                         this.productos = res.data.data;
-                    } 
+                    }
                     // Si viene directamente como array
                     else if (Array.isArray(res.data)) {
                         this.productos = res.data;
@@ -163,9 +246,14 @@ export default {
             this._searchTimeout = setTimeout(() => this.fetchProductos(), 300);
         },
 
+        applySearch() {
+            this.fetchProductos();
+        },
+
         clearSearch() {
             this.q = "";
             this.fetchProductos();
+            this.selectedCategories = [];
         },
 
         goCreate() {
