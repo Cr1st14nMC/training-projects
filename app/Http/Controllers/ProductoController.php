@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Producto;
 use App\Models\Category;
+use App\Models\Proveedor;
 
 class ProductoController extends Controller
 {
@@ -15,7 +16,7 @@ class ProductoController extends Controller
     {
         $q = $request->query('q');
         $categories = $request->query('categories');
-        $query = Producto::with('categories');
+        $query = Producto::with('categories', 'proveedor');
 
         if ($q) {
             $query->where(function ($sub) use ($q) {
@@ -50,8 +51,8 @@ class ProductoController extends Controller
     public function create(Request $request)
     {
         $categories = Category::orderBy('nombre')->get();
-        return view('productos.create', compact('categories'));
-        // Si quieres que la vista create sea cargada por Vue desde /productos/create
+        $proveedores = Proveedor::orderBy('nombre')->get();
+        return view('productos.create', compact('categories', 'proveedores')); // <-- 3. PÁSALOS A LA VISTA        // Si quieres que la vista create sea cargada por Vue desde /productos/create
     }
 
     /**
@@ -63,8 +64,10 @@ class ProductoController extends Controller
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'precio' => 'required|numeric|min:0',
+            'cantidad' => 'required|integer|min:0',
             'categories' => 'nullable|array', // Espera un array de categorías
             'categories.*' => 'exists:categories,id', // Valida que cada ID en el array exista
+            'proveedor_id' => 'nullable|exists:proveedores,id', // <-- AÑADIR VALIDACIÓN
 
             // 'categories_id' => 'nullable|exists:categories,id',
         ]);
@@ -98,8 +101,10 @@ class ProductoController extends Controller
     {
         // Cargar todas las categorías
         $categories = Category::orderBy('nombre', 'asc')->get();
+        $proveedores = Proveedor::orderBy('nombre', 'asc')->get();
 
-        return view('productos.edit', compact('producto', 'categories'));
+        $producto->load('proveedor');
+        return view('productos.edit', compact('producto', 'categories', 'proveedores')); // <-- 3. PÁSALOS A LA VISTA
     }
 
     /**
@@ -112,8 +117,10 @@ class ProductoController extends Controller
             'descripcion' => 'nullable|string|max:500',
             // 'categoria_id' => 'required|exists:categories,id',
             'precio' => 'required|numeric|min:0',
+            'cantidad' => 'required|integer|min:0',
             'categories' => 'nullable|array',
             'categories.*' => 'exists:categories,id',
+            'proveedor_id' => 'nullable|exists:proveedores,id', // <-- AÑADIR VALIDACIÓN
         ]);
 
         $producto->update($validated);

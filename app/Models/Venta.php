@@ -13,6 +13,7 @@ class Venta extends Model
         'user_id',
         'fecha_venta',
         'total',
+        'cantidad',
         'observaciones',
     ];
 

@@ -66,7 +66,7 @@
             v-if="alert.show"
             :class="[
                 'alert',
-                alert.type === 'success' ? 'alert-success' : 'alert-danger',
+                alert.type === 'success' ? 'alert-primary' : 'alert-danger',
                 'alert-dismissible',
                 'fade',
                 'show',
@@ -98,7 +98,9 @@
                     <th>Nombre</th>
                     <th>Descripción</th>
                     <th>Precio</th>
+                    <th>Cantidad</th>
                     <th>Categoria</th>
+                    <th>Proveedor</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -109,6 +111,7 @@
                     <td>{{ producto.nombre }}</td>
                     <td>{{ producto.descripcion }}</td>
                     <td>${{ Number(producto.precio).toFixed(2) }}</td>
+                    <td>{{ producto.cantidad }}</td>
                     <td>
                         <span
                             v-if="
@@ -126,6 +129,14 @@
                         </span>
                         <span v-else class="text-muted fst-italic">
                             Sin categoría
+                        </span>
+                    </td>
+                    <td>
+                        <span v-if="producto.proveedor">
+                            {{ producto.proveedor.nombre }}
+                        </span>
+                        <span v-else class="text-muted fst-italic">
+                            Sin proveedor
                         </span>
                     </td>
                     <td>

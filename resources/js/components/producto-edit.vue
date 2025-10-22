@@ -5,7 +5,7 @@
             v-if="alert.show"
             :class="[
                 'alert',
-                alert.type === 'success' ? 'alert-success' : 'alert-danger',
+                alert.type === 'success' ? 'alert-primary' : 'alert-danger',
                 'alert-dismissible',
                 'fade',
                 'show',
@@ -72,13 +72,40 @@
                             style="height: 150px"
                         >
                             <option
-                                v-for="cat in categories"
+                                v-for="cat in categoriesData"
                                 :key="cat.id"
                                 :value="cat.id"
                             >
                                 {{ cat.nombre }}
                             </option>
                         </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="proveedor_id" class="form-label"
+                            >Proveedor</label
+                        >
+                        <select
+                            id="proveedor_id"
+                            v-model="form.proveedor_id"
+                            class="form-select"
+                            :class="{ 'is-invalid': errors.proveedor_id }"
+                        >
+                            <option :value="null">-- Sin proveedor --</option>
+                            <option
+                                v-for="prov in proveedoresData"
+                                :key="prov.id"
+                                :value="prov.id"
+                            >
+                                {{ prov.nombre }}
+                                {{ prov.empresa ? `- ${prov.empresa}` : "" }}
+                            </option>
+                        </select>
+                        <div
+                            v-if="errors.proveedor_id"
+                            class="invalid-feedback d-block"
+                        >
+                            {{ errors.proveedor_id[0] }}
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -98,6 +125,26 @@
                             class="invalid-feedback d-block"
                         >
                             {{ errors.precio[0] }}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cantidad" class="form-label"
+                            >Cantidad en Stock</label
+                        >
+                        <input
+                            type="number"
+                            id="cantidad"
+                            class="form-control"
+                            v-model="form.cantidad"
+                            :class="{ 'is-invalid': errors.cantidad }"
+                            required
+                            min="0"
+                        />
+                        <div
+                            v-if="errors.cantidad"
+                            class="invalid-feedback d-block"
+                        >
+                            {{ errors.cantidad[0] }}
                         </div>
                     </div>
 
@@ -138,10 +185,11 @@ export default {
             type: Object,
             required: true,
         },
-        categories: {
-            type: Array,
-            default: () => [],
-        },
+        // categories: {
+        //     type: Array,
+        //     default: () => [],
+        // },
+        // proveedores: { type: Array, default: () => [] }, // <-- AÑADIR ESTA PROP
         updateUrl: {
             type: String,
             required: true,
@@ -157,10 +205,15 @@ export default {
                 nombre: this.producto.nombre || "",
                 descripcion: this.producto.descripcion || "",
                 precio: this.producto.precio || 0,
+                cantidad: this.producto.cantidad || 0,
                 categories: this.producto.categories
                     ? this.producto.categories.map((cat) => cat.id)
                     : [],
+                proveedor_id: this.producto.proveedor_id || null, // <-- AÑADIR ESTO
             },
+            categoriesData: [],
+            proveedoresData: [],
+
             errors: {},
             alert: {
                 show: false,
@@ -172,10 +225,65 @@ export default {
     },
     mounted() {
         console.log("Producto:", this.producto);
+
         console.log("Categorías:", this.categories);
         console.log("Form initialized:", this.form);
+
+        this.cargarCategorias();
+        this.cargarProveedores();
     },
     methods: {
+        async cargarCategorias() {
+            try {
+                console.log("Cargando categorías...");
+                const response = await axios.get("/api/categories");
+
+                if (Array.isArray(response.data)) {
+                    this.categoriesData = response.data;
+                } else if (
+                    response.data.data &&
+                    Array.isArray(response.data.data)
+                ) {
+                    this.categoriesData = response.data.data;
+                } else {
+                    this.categoriesData = [];
+                }
+
+                console.log("Categorías cargadas:", this.categoriesData.length);
+            } catch (error) {
+                console.error("Error al cargar categorías:", error);
+            }
+        },
+
+        async cargarProveedores() {
+            try {
+                console.log("Cargando proveedores...");
+                const response = await axios.get("/api/proveedores");
+
+                if (Array.isArray(response.data)) {
+                    this.proveedoresData = response.data.filter(
+                        (p) => p.activo
+                    );
+                } else if (
+                    response.data.data &&
+                    Array.isArray(response.data.data)
+                ) {
+                    this.proveedoresData = response.data.data.filter(
+                        (p) => p.activo
+                    );
+                } else {
+                    this.proveedoresData = [];
+                }
+
+                console.log(
+                    "Proveedores cargados:",
+                    this.proveedoresData.length
+                );
+            } catch (error) {
+                console.error("Error al cargar proveedores:", error);
+            }
+        },
+
         async updateProduct() {
             this.loading = true;
             this.errors = {};

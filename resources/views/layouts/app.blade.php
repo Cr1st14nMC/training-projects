@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="es">
+
 <head>
   <meta charset="utf-8">
   <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -10,33 +11,57 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
+
 <body>
   <div class="d-flex">
     <!-- Sidebar -->
-    <nav class="sidebar d-flex flex-column p-3 bg-light shadow" style="min-height: 100vh; min-width: 220px; max-width: 250px;">
+    <nav class="sidebar d-flex flex-column p-3 bg-light shadow"
+      style="min-height: 100vh; min-width: 220px; max-width: 250px;">
       <h4 class="text-center mb-4">Panel de control</h4>
       <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item mb-2">
-          <a class="nav-link d-flex align-items-center gap-2 {{ request()->routeIs('productos.*') ? 'active' : '' }}" 
-             href="{{ route('productos.index') }}">
-            <i class="bi bi-bag-fill"></i> 
+          <a class="nav-link d-flex align-items-center gap-2 {{ request()->routeIs('productos.*') ? 'active' : '' }}"
+            href="{{ route('productos.index') }}">
+            <i class="bi bi-bag-fill"></i>
             <span>Productos</span>
           </a>
         </li>
         <li class="nav-item mb-2">
-          <a class="nav-link d-flex align-items-center gap-2 {{ request()->routeIs('categories.*') ? 'active' : '' }}" 
-             href="{{ route('categories.index') }}">
-            <i class="bi bi-tags-fill"></i> 
+          <a class="nav-link d-flex align-items-center gap-2 {{ request()->routeIs('categories.*') ? 'active' : '' }}"
+            href="{{ route('categories.index') }}">
+            <i class="bi bi-tags-fill"></i>
             <span>Categorías</span>
           </a>
         </li>
         <li class="nav-item mb-2">
-          <a class="nav-link d-flex align-items-center gap-2 {{ request()->routeIs('ventas.*') ? 'active' : '' }}" 
-             href="{{ route('ventas.index') }}">
+          <a class="nav-link d-flex align-items-center gap-2 {{ request()->routeIs('ventas.*') ? 'active' : '' }}"
+            href="{{ route('ventas.index') }}">
             <i class="bi bi-cart-fill"></i>
             <span>Ventas</span>
           </a>
         </li>
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2 {{ request()->routeIs('proveedores.*') ? 'active' : '' }}"
+            href="{{ route('proveedores.index') }}">
+            <i class="bi bi-truck fill"></i>
+            <span>Proveedores</span>
+          </a>
+        </li>
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2 {{ request()->routeIs('compras.*') ? 'active' : '' }}"
+            href="{{ route('compras.index') }}">
+            <i class="bi bi-cart-fill"></i>
+            <span>Compras</span>
+          </a>
+        </li>
+        <li class="nav-item mb-2">
+          <a class="nav-link d-flex align-items-center gap-2 {{ request()->routeIs('inventario.*') ? 'active' : '' }}"
+            href="{{ route('inventario.index') }}">
+            <i class="bi bi-box-seam-fill"></i>
+            <span>Control de Inventario</span>
+          </a>
+        </li>
+
       </ul>
     </nav>
 
@@ -70,4 +95,5 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   @stack('scripts')
 </body>
+
 </html>

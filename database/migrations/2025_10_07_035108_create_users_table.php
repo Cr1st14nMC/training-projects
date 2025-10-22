@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id(); // ID único para cada usuario
-            $table->string('name'); // Nombre del usuario
-            $table->string('email')->unique(); // Email, debe ser único
-            $table->timestamp('email_verified_at')->nullable(); // Para verificación de email (opcional)
-            $table->string('password'); // Contraseña encriptada
-            $table->rememberToken(); // Para la función "Recordarme"
-            $table->timestamps(); // Campos created_at y updated_at
-        });
+        // Schema::create('users', function (Blueprint $table) {
+        //     $table->id(); // ID único para cada usuario
+        //     $table->string('name'); // Nombre del usuario
+        //     $table->string('email')->unique(); // Email, debe ser único
+        //     $table->timestamp('email_verified_at')->nullable(); // Para verificación de email (opcional)
+        //     $table->string('password'); // Contraseña encriptada
+        //     $table->rememberToken(); // Para la función "Recordarme"
+        //     $table->timestamps(); // Campos created_at y updated_at
+        // });
     }
 
     /**
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        // Schema::dropIfExists('users');
     }
 };
