@@ -25,7 +25,7 @@
                     <!-- Fecha de Venta -->
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label">Fecha de Venta *</label>
+                            <label class="form-label">Fecha de Venta</label>
                             <input
                                 type="date"
                                 class="form-control"
@@ -344,7 +344,7 @@ export default {
 
             // Limpiar campos
             this.productoSeleccionado = null;
-            this.cantidadTemporal = 0;
+            this.cantidadTemporal = null;
         },
 
         quitarProducto(index) {
